@@ -1,168 +1,97 @@
 import streamlit as st
-from PIL import Image
 import pandas as pd
-import base64
-import matplotlib.pyplot as plt
-from bs4 import BeautifulSoup
-import requests
-import json
-import time
-#---------------------------------#
-# New feature (make sure to upgrade your streamlit library)
-# pip install --upgrade streamlit
 
-#---------------------------------#
-# Page layout
-## Page expands to full width
-st.set_page_config(layout="wide")
-#---------------------------------#
-# Title
+st.markdown('''# **Binance Price App**
+A simple cryptocurrency price app pulling price data from *Binance API*.
+''')
 
-image = Image.open('logo.jpg')
-
-st.image(image, width = 500)
-
-st.title('Crypto Price App')
-st.markdown("""
-This app retrieves cryptocurrency prices for the top 100 cryptocurrency from the **CoinMarketCap**!
-
-""")
-#---------------------------------#
 # About
 expander_bar = st.expander("About")
 expander_bar.markdown("""
 * **Python libraries:** base64, pandas, streamlit, numpy, matplotlib, seaborn, BeautifulSoup, requests, json, time
-* **Data source:** [CoinMarketCap](http://coinmarketcap.com).
-* **Credit:** Web scraper adapted from the Medium article *[Web Scraping Crypto Prices With Python](https://towardsdatascience.com/web-scraping-crypto-prices-with-python-41072ea5b5bf)* written by [Bryan Feng](https://medium.com/@bryanf).
+* **Data source:** [Binance](http://binance.com).
 """)
-
-
-#---------------------------------#
 # Page layout (continued)
 ## Divide page to 3 columns (col1 = sidebar, col2 and col3 = page contents)
-col1 = st.sidebar
-col2, col3 = st.columns((2,1))
 
-#---------------------------------#
-# Sidebar + Main panel
-col1.header('Input Options')
 
-## Sidebar - Currency price unit
-currency_price_unit = col1.selectbox('Select currency for price', ('USD', 'BTC', 'ETH'))
+st.header('**Selected Price**')
 
-# Web scraping of CoinMarketCap data
-@st.cache
-def load_data():
-    cmc = requests.get('https://coinmarketcap.com')
-    soup = BeautifulSoup(cmc.content, 'html.parser')
+# Load market data from Binance API
+df = pd.read_json('https://api.binance.com/api/v3/ticker/24hr')
 
-    data = soup.find('script', id='__NEXT_DATA__', type='application/json')
-    coins = {}
-    coin_data = json.loads(data.contents[0])
-    listings = coin_data['props']['initialState']['cryptocurrency']['listingLatest']['data']
-    for i in listings:
-      coins[str(i['id'])] = i['slug']
+# Custom function for rounding values
+def round_value(input_value):
+    if input_value.values > 1:
+        a = float(round(input_value, 2))
+    else:
+        a = float(round(input_value, 8))
+    return a
 
-    coin_name = []
-    coin_symbol = []
-    market_cap = []
-    percent_change_1h = []
-    percent_change_24h = []
-    percent_change_7d = []
-    price = []
-    volume_24h = []
+col1, col2, col3 = st.columns(3)
 
-    for i in listings:
-      coin_name.append(i['slug'])
-      coin_symbol.append(i['symbol'])
-      price.append(i['quote'][currency_price_unit]['price'])
-      percent_change_1h.append(i['quote'][currency_price_unit]['percent_change_1h'])
-      percent_change_24h.append(i['quote'][currency_price_unit]['percent_change_24h'])
-      percent_change_7d.append(i['quote'][currency_price_unit]['percent_change_7d'])
-      market_cap.append(i['quote'][currency_price_unit]['market_cap'])
-      volume_24h.append(i['quote'][currency_price_unit]['volume_24h'])
+# Widget (Cryptocurrency selection box)
+col1_selection = st.sidebar.selectbox('Price 1', df.symbol, list(df.symbol).index('BTCUSDT') )
+col2_selection = st.sidebar.selectbox('Price 2', df.symbol, list(df.symbol).index('ETHUSDT') )
+col3_selection = st.sidebar.selectbox('Price 3', df.symbol, list(df.symbol).index('BNBUSDT') )
+col4_selection = st.sidebar.selectbox('Price 4', df.symbol, list(df.symbol).index('XRPUSDT') )
+col5_selection = st.sidebar.selectbox('Price 5', df.symbol, list(df.symbol).index('ADAUSDT') )
+col6_selection = st.sidebar.selectbox('Price 6', df.symbol, list(df.symbol).index('DOGEUSDT') )
+col7_selection = st.sidebar.selectbox('Price 7', df.symbol, list(df.symbol).index('SHIBUSDT') )
+col8_selection = st.sidebar.selectbox('Price 8', df.symbol, list(df.symbol).index('DOTUSDT') )
+col9_selection = st.sidebar.selectbox('Price 9', df.symbol, list(df.symbol).index('MATICUSDT') )
 
-    df = pd.DataFrame(columns=['coin_name', 'coin_symbol', 'market_cap', 'percent_change_1h', 'percent_change_24h', 'percent_change_7d', 'price', 'volume_24h'])
-    df['coin_name'] = coin_name
-    df['coin_symbol'] = coin_symbol
-    df['price'] = price
-    df['percent_change_1h'] = percent_change_1h
-    df['percent_change_24h'] = percent_change_24h
-    df['percent_change_7d'] = percent_change_7d
-    df['market_cap'] = market_cap
-    df['volume_24h'] = volume_24h
-    return df
+# DataFrame of selected Cryptocurrency
+col1_df = df[df.symbol == col1_selection]
+col2_df = df[df.symbol == col2_selection]
+col3_df = df[df.symbol == col3_selection]
+col4_df = df[df.symbol == col4_selection]
+col5_df = df[df.symbol == col5_selection]
+col6_df = df[df.symbol == col6_selection]
+col7_df = df[df.symbol == col7_selection]
+col8_df = df[df.symbol == col8_selection]
+col9_df = df[df.symbol == col9_selection]
 
-df = load_data()
+# Apply a custom function to conditionally round values
+col1_price = round_value(col1_df.weightedAvgPrice)
+col2_price = round_value(col2_df.weightedAvgPrice)
+col3_price = round_value(col3_df.weightedAvgPrice)
+col4_price = round_value(col4_df.weightedAvgPrice)
+col5_price = round_value(col5_df.weightedAvgPrice)
+col6_price = round_value(col6_df.weightedAvgPrice)
+col7_price = round_value(col7_df.weightedAvgPrice)
+col8_price = round_value(col8_df.weightedAvgPrice)
+col9_price = round_value(col9_df.weightedAvgPrice)
 
-## Sidebar - Cryptocurrency selections
-sorted_coin = sorted( df['coin_symbol'] )
-selected_coin = col1.multiselect('Cryptocurrency', sorted_coin, sorted_coin)
+# Select the priceChangePercent column
+col1_percent = f'{float(col1_df.priceChangePercent)}%'
+col2_percent = f'{float(col2_df.priceChangePercent)}%'
+col3_percent = f'{float(col3_df.priceChangePercent)}%'
+col4_percent = f'{float(col4_df.priceChangePercent)}%'
+col5_percent = f'{float(col5_df.priceChangePercent)}%'
+col6_percent = f'{float(col6_df.priceChangePercent)}%'
+col7_percent = f'{float(col7_df.priceChangePercent)}%'
+col8_percent = f'{float(col8_df.priceChangePercent)}%'
+col9_percent = f'{float(col9_df.priceChangePercent)}%'
 
-df_selected_coin = df[ (df['coin_symbol'].isin(selected_coin)) ] # Filtering data
+# Create a metrics price box
+col1.metric(col1_selection, col1_price, col1_percent)
+col2.metric(col2_selection, col2_price, col2_percent)
+col3.metric(col3_selection, col3_price, col3_percent)
+col1.metric(col4_selection, col4_price, col4_percent)
+col2.metric(col5_selection, col5_price, col5_percent)
+col3.metric(col6_selection, col6_price, col6_percent)
+col1.metric(col7_selection, col7_price, col7_percent)
+col2.metric(col8_selection, col8_price, col8_percent)
+col3.metric(col9_selection, col9_price, col9_percent)
 
-## Sidebar - Number of coins to display
-num_coin = col1.slider('Display Top N Coins', 1, 100, 100)
-df_coins = df_selected_coin[:num_coin]
+st.header('**All Price**')
+st.dataframe(df)
 
-## Sidebar - Percent change timeframe
-percent_timeframe = col1.selectbox('Percent change time frame',
-                                    ['7d','24h', '1h'])
-percent_dict = {"7d":'percent_change_7d',"24h":'percent_change_24h',"1h":'percent_change_1h'}
-selected_percent_timeframe = percent_dict[percent_timeframe]
+st.info('Credit: Created by Hashim Ali Zaidi')
 
-## Sidebar - Sorting values
-sort_values = col1.selectbox('Sort values?', ['Yes', 'No'])
-
-col2.subheader('Price Data of Selected Cryptocurrency')
-col2.write('Data Dimension: ' + str(df_selected_coin.shape[0]) + ' rows and ' + str(df_selected_coin.shape[1]) + ' columns.')
-
-col2.dataframe(df_coins)
-
-# Download CSV data
-# https://discuss.streamlit.io/t/how-to-download-file-in-streamlit/1806
-def filedownload(df):
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()  # strings <-> bytes conversions
-    href = f'<a href="data:file/csv;base64,{b64}" download="crypto.csv">Download CSV File</a>'
-    return href
-
-col2.markdown(filedownload(df_selected_coin), unsafe_allow_html=True)
-
-#---------------------------------#
-# Preparing data for Bar plot of % Price change
-col2.subheader('Table of % Price Change')
-df_change = pd.concat([df_coins.coin_symbol, df_coins.percent_change_1h, df_coins.percent_change_24h, df_coins.percent_change_7d], axis=1)
-df_change = df_change.set_index('coin_symbol')
-df_change['positive_percent_change_1h'] = df_change['percent_change_1h'] > 0
-df_change['positive_percent_change_24h'] = df_change['percent_change_24h'] > 0
-df_change['positive_percent_change_7d'] = df_change['percent_change_7d'] > 0
-col2.dataframe(df_change)
-
-# Conditional creation of Bar plot (time frame)
-col3.subheader('Bar plot of % Price Change')
-
-if percent_timeframe == '7d':
-    if sort_values == 'Yes':
-        df_change = df_change.sort_values(by=['percent_change_7d'])
-    col3.write('*7 days period*')
-    plt.figure(figsize=(5,25))
-    plt.subplots_adjust(top = 1, bottom = 0)
-    df_change['percent_change_7d'].plot(kind='barh', color=df_change.positive_percent_change_7d.map({True: 'g', False: 'r'}))
-    col3.pyplot(plt)
-elif percent_timeframe == '24h':
-    if sort_values == 'Yes':
-        df_change = df_change.sort_values(by=['percent_change_24h'])
-    col3.write('*24 hour period*')
-    plt.figure(figsize=(5,25))
-    plt.subplots_adjust(top = 1, bottom = 0)
-    df_change['percent_change_24h'].plot(kind='barh', color=df_change.positive_percent_change_24h.map({True: 'g', False: 'r'}))
-    col3.pyplot(plt)
-else:
-    if sort_values == 'Yes':
-        df_change = df_change.sort_values(by=['percent_change_1h'])
-    col3.write('*1 hour period*')
-    plt.figure(figsize=(5,25))
-    plt.subplots_adjust(top = 1, bottom = 0)
-    df_change['percent_change_1h'].plot(kind='barh', color=df_change.positive_percent_change_1h.map({True: 'g', False: 'r'}))
-    col3.pyplot(plt)
+st.markdown("""
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+""", unsafe_allow_html=True)

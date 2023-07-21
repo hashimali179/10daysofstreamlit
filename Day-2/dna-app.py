@@ -6,7 +6,7 @@ from PIL import Image
 ######################
 # Page Title
 ######################
-
+st.image("https://github.com/hashimali179/10daysofstreamlit/blob/main/Day-2/dna-logo.jpg")
 
 st.write("""
 # DNA Nucleotide count Web App

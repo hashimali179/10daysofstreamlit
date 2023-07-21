@@ -6,8 +6,7 @@ from PIL import Image
 ######################
 # Page Title
 ######################
-fp = builtins.open('images/dna-logo.jpg', "rb")
-image = Image.open(fp)
+image = Image.open('images/dna-logo.jpg', "rb")
 
 st.image(image, use_column_width=True)
 

@@ -6,10 +6,7 @@ from PIL import Image
 ######################
 # Page Title
 ######################
-
-image = Image.open('images\dna-logo.jpg')
-
-st.image(image, use_column_width=True)
+st.image("https://github.com/hashimali179/10daysofstreamlit/blob/main/Day-2/dna-logo.jpg", width=300)
 
 st.write("""
 # DNA Nucleotide count Web App

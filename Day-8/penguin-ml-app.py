@@ -43,7 +43,7 @@ else:
 
 # Combines user input features with entire penguins dataset
 # This will be useful for the encoding phase
-penguins_raw = pd.read_csv(os.path.abspath(os.path.dirname(__file__))+'penguins_cleaned.csv')
+penguins_raw = pd.read_csv('penguins_cleaned.csv')
 penguins = penguins_raw.drop(columns=['species'])
 df = pd.concat([input_df,penguins],axis=0)
 
@@ -66,7 +66,8 @@ else:
     st.write(df)
 
 # Reads in saved classification model
-load_clf = pickle.load(open(os.path.abspath(os.path.dirname(__file__))+'penguins_clf.pkl', 'rb'))
+with open('penguins_clf.pkl', 'rb') as file: 
+    load_clf = pickle.load(file)
 
 # Apply model to make predictions
 prediction = load_clf.predict(df)

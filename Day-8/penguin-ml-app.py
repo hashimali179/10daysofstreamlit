@@ -45,7 +45,9 @@ else:
 # This will be useful for the encoding phase
 @st.cache(allow_output_mutation=True)
 def load_data():
-    return pd.read_csv('penguins_cleaned.csv')
+    # Construct the file path to penguins_cleaned.csv
+    file_path = os.path.join(os.path.dirname(__file__), 'penguins_cleaned.csv')
+    return pd.read_csv(file_path)
 
 penguins_raw = load_data()
 penguins = penguins_raw.drop(columns=['species'])
@@ -72,7 +74,9 @@ else:
 # Reads in saved classification model
 @st.cache(allow_output_mutation=True)
 def load_model():
-    with open('penguins_clf.pkl', 'rb') as file:
+    # Construct the file path to penguins_clf.pkl
+    file_path = os.path.join(os.path.dirname(__file__), 'penguins_clf.pkl')
+    with open(file_path, 'rb') as file:
         return pickle.load(file)
 
 load_clf = load_model()

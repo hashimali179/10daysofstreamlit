@@ -43,9 +43,13 @@ else:
 
 # Combines user input features with entire penguins dataset
 # This will be useful for the encoding phase
-penguins_raw = pd.read_csv('penguins_cleaned.csv')
+@st.cache(allow_output_mutation=True)
+def load_data():
+    return pd.read_csv('penguins_cleaned.csv')
+
+penguins_raw = load_data()
 penguins = penguins_raw.drop(columns=['species'])
-df = pd.concat([input_df,penguins],axis=0)
+df = pd.concat([input_df, penguins], axis=0)
 
 # Encoding of ordinal features
 # https://www.kaggle.com/pratik1120/penguin-dataset-eda-classification-and-clustering
@@ -66,8 +70,12 @@ else:
     st.write(df)
 
 # Reads in saved classification model
-with open('penguins_clf.pkl', 'rb') as file: 
-    load_clf = pickle.load(file)
+@st.cache(allow_output_mutation=True)
+def load_model():
+    with open('penguins_clf.pkl', 'rb') as file:
+        return pickle.load(file)
+
+load_clf = load_model()
 
 # Apply model to make predictions
 prediction = load_clf.predict(df)

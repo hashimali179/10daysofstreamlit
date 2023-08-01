@@ -47,3 +47,6 @@ st.write(iris.target_names[prediction])
 
 st.subheader('Prediction Probability')
 st.write(prediction_proba)
+
+
+sklearn.show_versions()

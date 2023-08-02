@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import pickle
+import os
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 

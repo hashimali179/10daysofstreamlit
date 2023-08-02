@@ -100,7 +100,7 @@ X[1:] # Skips the dummy first item
 @st.cache(allow_output_mutation=True)
 def load_model():
     # Construct the file path to penguins_clf.pkl
-    file_path = os.path.join(os.path.dirname(__file__), 'penguins_clf.pkl')
+    file_path = os.path.join(os.path.dirname(__file__), 'solubility_model.pkl')
     with open(file_path, 'rb') as file:
         return pickle.load(file)
 

@@ -96,7 +96,7 @@ X[1:] # Skips the dummy first item
 ######################
 
 # Reads in saved model
-load_model = pickle.load(open('solubility_model.pkl', 'rb'))
+load_model = os.path.join(os.path.dirname(__file__), 'solubility_model.pkl')
 
 # Apply model to make predictions
 prediction = load_model.predict(X)

@@ -95,11 +95,18 @@ X[1:] # Skips the dummy first item
 # Pre-built model
 ######################
 
-# Reads in saved model
-load_model = os.path.join(os.path.dirname(__file__), 'solubility_model.pkl')
+# Reads in saved classification model
+@st.cache(allow_output_mutation=True)
+def load_model():
+    # Construct the file path to penguins_clf.pkl
+    file_path = os.path.join(os.path.dirname(__file__), 'penguins_clf.pkl')
+    with open(file_path, 'rb') as file:
+        return pickle.load(file)
+
+load_model_ = load_model()
 
 # Apply model to make predictions
-prediction = load_model.predict(X)
+prediction = load_model_.predict(X)
 #prediction_proba = load_model.predict_proba(X)
 
 st.header('Predicted LogS values')

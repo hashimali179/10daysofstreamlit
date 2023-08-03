@@ -119,7 +119,7 @@ st.subheader('Encoded User Input parameters')
 st.write(input_df)
 
 
-
+st.header('Predicted Value')
 prediction = rf_model.predict(input_df)
-if st.button:
+if st.button('Show Predictions'):
     st.write(prediction)

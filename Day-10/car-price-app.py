@@ -116,7 +116,8 @@ input_df['Transmission']=input_df['Transmission'].map(transmission_label)
 # encoded_input_df = pd.DataFrame(input_df)
 # Displays the encoded user input features
 st.subheader('Encoded User Input parameters')
-st.write(input_df)
+if st.button('Show encoded df'):
+    st.write(input_df)
 
 
 st.header('Predicted Value')

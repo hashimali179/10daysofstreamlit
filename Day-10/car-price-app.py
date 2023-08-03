@@ -124,6 +124,6 @@ if st.button('Show Encoded DataFrame'):
 st.header('Predicted Value')
 prediction = rf_model.predict(input_df)
 if st.button('Show Predictions'):
-    st.write("Value shown above is in Lakhs")
     st.write(prediction)
-    st.write("Value shown above is in Lakhs")
+
+st.write("Value shown above is in Lakhs")

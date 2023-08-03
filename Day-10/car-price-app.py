@@ -1,10 +1,10 @@
 import streamlit as st
-import numpy as np
+# import numpy as np
 import pandas as pd
 import os
-import pickle
+# import pickle
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.preprocessing import LabelEncoder
+# from sklearn.preprocessing import LabelEncoder
 
 
 # Page layout
@@ -102,7 +102,6 @@ final_dataset['Transmission'] = final_dataset['Transmission'].map(transmission_l
 X = final_dataset.drop('Selling_Price', axis=1)
 y = final_dataset['Selling_Price']
 
-st.write(X)
 # Create a Random Forest Regression model
 rf_model = DecisionTreeRegressor(random_state=42)
 

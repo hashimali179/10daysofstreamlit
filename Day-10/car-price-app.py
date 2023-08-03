@@ -125,3 +125,4 @@ st.header('Predicted Value')
 prediction = rf_model.predict(input_df)
 if st.button('Show Predictions'):
     st.write(prediction)
+    st.write("Value shown above is in Lakhs")

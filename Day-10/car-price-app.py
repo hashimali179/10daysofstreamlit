@@ -67,7 +67,8 @@ input_df = user_input_features()
 
 # Displays the user input features
 st.subheader('User Input parameters')
-st.write(input_df)
+if st.button('Show Input DataFrame'):
+    st.write(input_df)
 
 
 # # Encode categorical variables
@@ -116,7 +117,7 @@ input_df['Transmission']=input_df['Transmission'].map(transmission_label)
 # encoded_input_df = pd.DataFrame(input_df)
 # Displays the encoded user input features
 st.subheader('Encoded User Input parameters')
-if st.button('Show encoded df'):
+if st.button('Show Encoded DataFrame'):
     st.write(input_df)
 
 

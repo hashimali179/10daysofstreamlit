@@ -22,7 +22,7 @@ This app predicts used car prices on the basis of historical data from **CarDekh
 # About
 expander_bar = st.expander("About")
 expander_bar.markdown("""
-* **Python libraries:**numpy, pandas, streamlit, scikit-learn, matplotlib, seaborn, Pickle,
+* **Python libraries:** numpy, pandas, streamlit, scikit-learn, matplotlib, seaborn, Pickle,
 * **Data source:** [CarDekho](http://cardekho.com).
 * **Rebuiling on streamlit:** This web appliction was already built on django framwork for my college project, now that I am learning streamlit, I have built it using streamlit library.
 """)

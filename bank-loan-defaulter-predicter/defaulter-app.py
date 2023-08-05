@@ -6,6 +6,7 @@ import os
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
 
 
 
@@ -178,3 +179,16 @@ if st.button("Predict..."):
 
     st.subheader('Prediction Probability')
     st.write(prediction_proba)
+
+st.header("Click on the button below to check feature importance")
+
+if st.button("Show feature importance"):
+    feature_importance = xgb_model.feature_importances_
+    feature_names = X_train.columns
+    # Plot the Feature Importance graph
+    plt.figure(figsize=(8, 6))
+    plt.barh(feature_names, feature_importance)
+    plt.xlabel('Feature Importance')
+    plt.ylabel('Features')
+    plt.title('XGBoost Feature Importance')
+    plt.show()

@@ -16,9 +16,9 @@ st.set_page_config(layout="wide")
 #---------------------------------#
 # Title
 
-st.title('Used Car Price Prediction App')
+st.title('Bank Loan Defaulter Prediction App')
 st.markdown("""
-This app predicts used car prices on the basis of historical data from **CarDekho**!
+This app predicts weather a person will be defaulter or not on the basis of Historical Data!
 
 """)
 image = os.path.join(os.path.dirname(__file__), 'loandefaulter.jpg')
@@ -27,7 +27,7 @@ st.image(image, use_column_width=True)
 # About
 expander_bar = st.expander("About")
 expander_bar.markdown("""
-* **Python libraries:** numpy, pandas, streamlit, scikit-learn, matplotlib, seaborn, Pickle,
+* **Python libraries:** numpy, pandas, streamlit, scikit-learn, xgboost
 * **Rebuiling on streamlit:** THis was my EDA project. I am expanding this project into a full stack data science project using streamlit.
 """)
 
@@ -154,25 +154,27 @@ y = final_dataset["TARGET"]
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Create and fit the XGBoost Classifier model
-xgb_model = XGBClassifier(random_state=43)
-xgb_model.fit(X_train, y_train)
+st.header("Press this button to check accuracy, Prediction and prediction probability")
+if st.button("Predict..."):
+    # Create and fit the XGBoost Classifier model
+    xgb_model = XGBClassifier(random_state=43)
+    xgb_model.fit(X_train, y_train)
 
-# Make predictions on the test set
-y_pred = xgb_model.predict(X_test)
+    # Make predictions on the test set
+    y_pred = xgb_model.predict(X_test)
 
-# Calculate accuracy score
-accuracy = accuracy_score(y_test, y_pred)
-st.subheader('Accuracy')
-st.write("Accuracy of the model is :",accuracy)
+    # Calculate accuracy score
+    accuracy = accuracy_score(y_test, y_pred)
+    st.subheader('Accuracy')
+    st.write("Accuracy of the model is :",accuracy)
 
-prediction = xgb_model.predict(input_df)
-prediction_proba = xgb_model.predict_proba(input_df)
+    prediction = xgb_model.predict(input_df)
+    prediction_proba = xgb_model.predict_proba(input_df)
 
 
-st.subheader('Prediction')
-loan_tpye = np.array(['Non-Defaulter','Defaulter'])
-st.write(loan_tpye[prediction])
+    st.subheader('Prediction')
+    loan_tpye = np.array(['Non-Defaulter','Defaulter'])
+    st.write(loan_tpye[prediction])
 
-st.subheader('Prediction Probability')
-st.write(prediction_proba)
+    st.subheader('Prediction Probability')
+    st.write(prediction_proba)

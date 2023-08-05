@@ -21,7 +21,7 @@ st.markdown("""
 This app predicts used car prices on the basis of historical data from **CarDekho**!
 
 """)
-image = 'loandefaulter.jpg'
+image = os.path.join(os.path.dirname(__file__), 'loandefaulter.jpg')
 st.image(image, use_column_width=True)
 #---------------------------------#
 # About

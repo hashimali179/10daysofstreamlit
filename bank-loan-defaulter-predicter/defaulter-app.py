@@ -155,12 +155,12 @@ y = final_dataset["TARGET"]
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# Create and fit the XGBoost Classifier model
+xgb_model = XGBClassifier(random_state=43)
+xgb_model.fit(X_train, y_train)
+
 st.header("Press this button to check accuracy, Prediction and prediction probability")
 if st.button("Predict..."):
-    # Create and fit the XGBoost Classifier model
-    xgb_model = XGBClassifier(random_state=43)
-    xgb_model.fit(X_train, y_train)
-
     # Make predictions on the test set
     y_pred = xgb_model.predict(X_test)
 

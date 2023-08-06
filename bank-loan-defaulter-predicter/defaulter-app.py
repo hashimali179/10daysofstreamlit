@@ -143,8 +143,7 @@ input_df["LIVE_CITY_NOT_WORK_CITY"] = input_df["LIVE_CITY_NOT_WORK_CITY"].map(LI
 input_df["FLAG_DOCUMENT_6"] = input_df["FLAG_DOCUMENT_6"].map(FLAG_DOCUMENT_6_LABEL)
 input_df["FLAG_DOCUMENT_8"] = input_df["FLAG_DOCUMENT_8"].map(FLAG_DOCUMENT_8_LABEL)
 
-if st.button("Show Encoded Dataframe and User Input"):
-    st.write(input_df)
+
 
 X = final_dataset.drop("TARGET", axis = 1)
 y = final_dataset["TARGET"]
@@ -194,3 +193,8 @@ ax[1].set_title('Accuracy Score')
 
 plt.tight_layout()
 st.pyplot(fig)
+
+
+
+if st.button("Show Encoded  User Input"):
+    st.write(input_df)

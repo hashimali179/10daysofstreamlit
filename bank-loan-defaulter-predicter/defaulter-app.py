@@ -2,8 +2,9 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import os
-# import pickle
-from xgboost import XGBClassifier
+import pickle
+import joblib
+# from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
@@ -29,23 +30,20 @@ st.image(image, use_column_width=True)
 expander_bar = st.expander("About")
 expander_bar.markdown("""
 * **Python libraries:** numpy, pandas, streamlit, scikit-learn, xgboost
-* **Rebuiling on streamlit:** THis was my EDA project. I am expanding this project into a full stack data science project using streamlit.
+* **Rebuiling on streamlit:** This was my EDA project. I am expanding this project into a full stack data science project using streamlit.
 """)
 
-@st.cache(allow_output_mutation=True)
+# Construct the file path to xgboost_model.pkl
+pickle_file_path = os.path.join(os.path.dirname(__file__), 'xgboost_model.pkl')
+xgb_model = joblib.load(pickle_file_path)
+
+# Construct the file path to final_df.csv
 def load_data():
-    # Construct the file path to penguins_cleaned.csv
     file_path = os.path.join(os.path.dirname(__file__), 'final_df.csv')
     return pd.read_csv(file_path)
 
 final_dataset = load_data()
 final_dataset = final_dataset.drop(columns=['DAYS_EMPLOYED','DAYS_REGISTRATION','DAYS_ID_PUBLISH'])
-
-st.subheader('User Input parameters')
-if st.button("Show Dataframe"):
-    st.write(final_dataset)
-
-
 # Sidebar 
 
 st.sidebar.header('User Input Parameters')
@@ -136,7 +134,7 @@ input_df["NAME_CONTRACT_TYPE"] = input_df["NAME_CONTRACT_TYPE"].map(NAME_CONTRAC
 input_df["CODE_GENDER"] = input_df["CODE_GENDER"].map(CODE_GENDER_INPUT_LABEL)
 input_df["FLAG_OWN_CAR"] = input_df["FLAG_OWN_CAR"].map(FLAG_OWN_CAR_INPUT_LABEL)
 input_df["FLAG_OWN_REALTY"] = input_df["FLAG_OWN_REALTY"].map(FLAG_OWN_REALTY_INPUT_LABEL)
-input_df["NAME_INCOME_TYPE"] = final_dataset["NAME_INCOME_TYPE"].map(NAME_INCOME_TYPE_LABEL)
+input_df["NAME_INCOME_TYPE"] = input_df["NAME_INCOME_TYPE"].map(NAME_INCOME_TYPE_LABEL)
 input_df["NAME_EDUCATION_TYPE"] = input_df["NAME_EDUCATION_TYPE"].map(NAME_EDUCATION_TYPE_LABEL)
 input_df["NAME_FAMILY_STATUS"] = input_df["NAME_FAMILY_STATUS"].map(NAME_FAMILY_STATUS_LABEL)
 input_df["NAME_HOUSING_TYPE"] = input_df["NAME_HOUSING_TYPE"].map(NAME_HOUSING_TYPE_LABEL)
@@ -146,7 +144,6 @@ input_df["FLAG_DOCUMENT_6"] = input_df["FLAG_DOCUMENT_6"].map(FLAG_DOCUMENT_6_LA
 input_df["FLAG_DOCUMENT_8"] = input_df["FLAG_DOCUMENT_8"].map(FLAG_DOCUMENT_8_LABEL)
 
 if st.button("Show Encoded Dataframe and User Input"):
-    st.write(final_dataset)
     st.write(input_df)
 
 X = final_dataset.drop("TARGET", axis = 1)
@@ -155,40 +152,45 @@ y = final_dataset["TARGET"]
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Create and fit the XGBoost Classifier model
-xgb_model = XGBClassifier(random_state=43)
-xgb_model.fit(X_train, y_train)
-
-st.header("Press this button to check accuracy, Prediction and prediction probability")
-if st.button("Predict..."):
-    # Make predictions on the test set
-    y_pred = xgb_model.predict(X_test)
-
-    # Calculate accuracy score
-    accuracy = accuracy_score(y_test, y_pred)
-    st.subheader('Accuracy')
-    st.write("Accuracy of the model is :",accuracy)
-
-    prediction = xgb_model.predict(input_df)
-    prediction_proba = xgb_model.predict_proba(input_df)
+# # Create and fit the XGBoost Classifier model
+# xgb_model = XGBClassifier(random_state=43)
+# xgb_model.fit(X_train, y_train)
 
 
-    st.subheader('Prediction')
-    loan_tpye = np.array(['Non-Defaulter','Defaulter'])
-    st.write(loan_tpye[prediction])
+# Make predictions on the test set
+y_pred = xgb_model.predict(X_test)
 
-    st.subheader('Prediction Probability')
-    st.write(prediction_proba)
+# Print accuracy score
+accuracy = accuracy_score(y_test, y_pred)
+st.subheader('Accuracy')
+st.write("Accuracy of the model is :",accuracy)
 
-st.header("Click on the button below to check feature importance")
+prediction = xgb_model.predict(input_df)
+prediction_proba = xgb_model.predict_proba(input_df)
 
-if st.button("Show feature importance"):
-    feature_importance = xgb_model.feature_importances_
-    feature_names = X_train.columns
-    # Plot the Feature Importance graph
-    plt.figure(figsize=(8, 6))
-    plt.barh(feature_names, feature_importance)
-    plt.xlabel('Feature Importance')
-    plt.ylabel('Features')
-    plt.title('XGBoost Feature Importance')
-    plt.show()
+
+st.subheader('Prediction')
+loan_tpye = np.array(['Non-Defaulter','Defaulter'])
+st.write(loan_tpye[prediction])
+
+st.subheader('Prediction Probability')
+st.write(prediction_proba)
+
+feature_importance = xgb_model.feature_importances_
+feature_names = X_train.columns
+# Plot the Feature Importance graph
+fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+# Subplot 1: Feature Importance
+ax[0].barh(feature_names, feature_importance)
+ax[0].set_xlabel('Feature Importance')
+ax[0].set_ylabel('Features')
+ax[0].set_title('XGBoost Feature Importance')
+
+# Subplot 2: Accuracy Score
+colors = ['limegreen', 'lightgray']
+explode = [0.1, 0]
+ax[1].pie([accuracy, 1 - accuracy], labels=['Accuracy', ''], colors=colors, explode=explode, autopct='%1.1f%%', startangle=90)
+ax[1].set_title('Accuracy Score')
+
+plt.tight_layout()
+st.pyplot(fig)

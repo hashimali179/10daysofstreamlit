@@ -18,7 +18,7 @@ st.set_page_config(layout="wide")
 #---------------------------------#
 # Title
 
-st.title('Bank Loan Defaulter Prediction App')
+st.title('Bank Loan Defaulter Classifier App')
 st.markdown("""
 This app predicts weather a person will be defaulter or not on the basis of Historical Data!
 
